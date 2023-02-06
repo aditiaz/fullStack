@@ -1,0 +1,43 @@
+.section-center {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr 1fr 1fr !important;
+  /* grid-auto-flow: row; */
+  background-color: aquamarine;
+}
+.click {
+  background-color: rgba(90, 87, 171, 1) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.noClick {
+  background-color: rgba(196, 196, 196, 0.25) !important;
+  color: black !important;
+}
+
+.dropDownNav {
+  /* background-color: aqua !important; */
+  gap: 5px !important;
+  /* padding-left: 10px !important; */
+  display: flex !important;
+  color: #5a57ab !important;
+  align-items: center !important;
+}
+
+.dropDownNav p {
+  background-color: blue;
+  font-size: 1rem;
+  padding-block: 5px !important;
+  color: black !important;
+}
+
+.detailPics img {
+  /* !important; */
+  border-radius: 5px !important;
+}
+.detailPicsSmall img {
+  /* !important; */
+  width: 29.5rem !important;
+  height: 19rem !important;
+}

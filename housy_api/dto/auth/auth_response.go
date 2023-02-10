@@ -4,6 +4,7 @@ type LoginResponse struct {
 	Username string `gorm:"type: varchar(255)" json:"username"`
 	Token    string `gorm:"type: varchar(255)" json:"token"`
 	ListAsId int    `gorm:"type: int" json:"list_as_id"`
+	ID       int    `json:"id"`
 }
 
 type RegisterResponse struct {

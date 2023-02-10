@@ -142,6 +142,7 @@ func (h *handlerAuth) Login(w http.ResponseWriter, r *http.Request) {
 		Username: user.Username,
 		Token:    token,
 		ListAsId: user.ListAsId,
+		ID: user.ID,
 
 	}
 

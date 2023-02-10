@@ -8,5 +8,5 @@ type ProfileResponse struct {
 	Gender  string                      `json:"gender" gorm:"type: varchar(255)"`
 	Address string                      `json:"address" gorm:"type: text"`
 	UserID  int                         `json:"user_id"`
-	User    models.UsersProfileResponse `json:"user"`
+	User    models.ProfileResponse `json:"user"`
 }

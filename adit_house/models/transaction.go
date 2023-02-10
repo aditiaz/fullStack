@@ -10,7 +10,7 @@ type Transaction struct {
 	Property  Property     `json:"property"`
 	UserID     int       `json:"user_id"`
 	User       User      `json:"user"`
-	Total      string    `json:"total"`
+	Total      int  `json:"total"`
 	Status     string    `json:"status"`
 	Attachment string    `json:"attachment"`
 

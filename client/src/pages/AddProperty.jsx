@@ -1,20 +1,24 @@
 import React, { useState } from "react";
 import { Navbars } from "../components";
-import { Col, Form, Container, Button, Card } from "react-bootstrap";
+import { Col, Form, Container, Button, Card, Alert } from "react-bootstrap";
 import { API, setAuthToken } from "../lib/_api";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
 
 export const AddProperty = () => {
+  const navigate = useNavigate();
   const [preview, setPreview] = useState(null);
+  const [message, setMessage] = useState(null);
   const [form, setForm] = useState({
-    name: "",
-    city_id: "",
+    name_property: "",
+    city: "",
     address: "",
     price: "",
-    type_rent: "",
+    type_of_rent: "",
     amenities: [],
     bedroom: "",
     bathroom: "",
+    sqf: "",
     description: "",
     image: "",
   });
@@ -46,22 +50,32 @@ export const AddProperty = () => {
       e.preventDefault();
       console.log("ini data productmu", form);
       const formData = new FormData();
-      formData.append("image", form.image[0]);
-      formData.append("name", form.name);
-      formData.append("city_id", form.city_id);
+      formData.append("name_property", form.name);
+      formData.append("city", form.city_id);
       formData.append("address", form.address);
       formData.append("price", form.price);
       formData.append("amenities", JSON.stringify(form.amenities));
-      formData.append("type_rent", form.type_rent);
+      formData.append("type_of_rent", form.type_of_rent);
       formData.append("bedroom", form.bedroom);
       formData.append("bathroom", form.bathroom);
+      formData.append("sqf", form.sqf);
       formData.append("description", form.description);
+      formData.append("image", form.image[0]);
 
       const response = await API.post("/addproperty", formData);
 
       console.log("berhasil menambahkan product", response);
       console.log(form.amenities);
+      if (response) {
+        navigate("/");
+      }
     } catch (err) {
+      const alert = (
+        <Alert variant="danger" className="py-1">
+          Unauthorized
+        </Alert>
+      );
+      setMessage(alert);
       console.log("gagal upload product", err);
       console.log(form.amenities);
     }
@@ -78,19 +92,28 @@ export const AddProperty = () => {
           <Form.Label>Name Property</Form.Label>
           <Form.Control
             onChange={handleChange}
-            id="name"
-            name="name"
+            id="name_property"
+            name="name_property"
             value={form.name}
             type="text"
             autoFocus
           />
         </Form.Group>
+        <Card.Img src={preview} />
+        <input type="file" id="upload" name="image" hidden onChange={handleChange} />
+        <div
+          style={{ display: "flex", width: "100%", justifyContent: "center", marginBlock: "2rem" }}
+        >
+          <label style={{ cursor: "pointer" }} for="upload" className="label-file-add-product">
+            Upload file
+          </label>
+        </div>
         <Form.Group className="mb-3">
           <Form.Label>City</Form.Label>
           <Form.Select
             onChange={handleChange}
-            id="city_id"
-            name="city_id"
+            id="city"
+            name="city"
             value={form.city_id}
             type="text"
             autoFocus
@@ -115,6 +138,17 @@ export const AddProperty = () => {
             autoFocus
           />
         </Form.Group>
+        <Form.Group name="sqf" className="mb-3">
+          <Form.Label>Sqf</Form.Label>
+          <Form.Control
+            onChange={handleChange}
+            id="sqf"
+            name="sqf"
+            value={form.sqf}
+            type="text"
+            autoFocus
+          />
+        </Form.Group>
         <Form.Group name="price" className="mb-3">
           <Form.Label>Price</Form.Label>
           <Form.Control
@@ -126,13 +160,13 @@ export const AddProperty = () => {
             autoFocus
           />
         </Form.Group>
-        <Form.Group name="type_rent" className="mb-3">
+        <Form.Group name="type_of_rent" className="mb-3">
           <Form.Label>Type of Rent</Form.Label>
           <Form.Select
             onChange={handleChange}
-            id="type_rent"
-            value={form.type_rent}
-            name="type_rent"
+            id="type_of_rent"
+            value={form.type_of_rent}
+            name="type_of_rent"
             type="text"
             autoFocus
           >
@@ -209,15 +243,8 @@ export const AddProperty = () => {
             autoFocus
           />
         </Form.Group>
-        <Card.Img src={preview} />
-        <input type="file" id="upload" name="image" hidden onChange={handleChange} />
-        <div
-          style={{ display: "flex", width: "100%", justifyContent: "center", marginBlock: "2rem" }}
-        >
-          <label style={{ cursor: "pointer" }} for="upload" className="label-file-add-product">
-            Upload file
-          </label>
-        </div>
+
+        {message && message}
         <Col className="d-flex mb-5 justify-content-center">
           <Button type="submit" className=" click" style={{ border: "none", width: "15rem" }}>
             Save

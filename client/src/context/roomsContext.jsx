@@ -11,6 +11,8 @@ export const RoomsContextProvider = (props) => {
   const [rooms, setRooms] = useState(datas);
   const [users, setUsers] = useState(books);
   const [userId, setUserId] = useState();
+  const [logInId, setLogInId] = useState();
+
   // console.log(users);
   const [signInForm, setSignInForm] = useState({
     username: "",
@@ -45,38 +47,11 @@ export const RoomsContextProvider = (props) => {
   const handleSignInChange = (e) => {
     setSignInForm({ ...signInForm, [e.target.name]: e.target.value });
   };
-  // const handleSignInSubmit = (e) => {
-  //   e.preventDefault();
-  //   // localStorage.getItem("SignIn",)
-  //   // let data = [];
-  //   const signUp = JSON.parse(localStorage.getItem("UserSignUp"));
-  //   if (
-  //     signUp.username === signInForm.username &&
-  //     signUp.password === signInForm.password &&
-  //     signInForm.username != "" &&
-  //     signInForm.password != ""
-  //   ) {
-  //     console.log(signUp.username);
-  //     navigate("/");
-  //     alert("ok");
-  //     localStorage.setItem("UserSignIn", JSON.stringify(signInForm));
-  //     // setLogin(true);
-  //   } else {
-  //     // setLogin(true);
-  //     alert("Either Username or password is wrong");
-  //   }
-  // };
 
-  // const { username, password } = signUpForm;
   const localSignUpForm = localStorage.getItem("UserSignUp");
   const localSignUpForm2 = JSON.parse(localSignUpForm);
 
-  useEffect(() => {
-    // console.log(localStorage.getItem("UserSignUp"));
-    // console.log(signInForm);
-    // console.log(signInForm.username);
-    // console.log(signInForm.password);
-  }, [signInForm]);
+  useEffect(() => {}, [signInForm]);
 
   const filterPeriod = (periods, numBed) => {
     const filterData = rooms.filter((time) => time.period === periods);
@@ -84,6 +59,7 @@ export const RoomsContextProvider = (props) => {
 
     setRooms(filterData);
   };
+
   return (
     <RoomsContext.Provider
       value={{
@@ -104,6 +80,8 @@ export const RoomsContextProvider = (props) => {
         setModalSignIn,
         userId,
         setUserId,
+        logInId,
+        setLogInId,
       }}
     >
       {props.children}

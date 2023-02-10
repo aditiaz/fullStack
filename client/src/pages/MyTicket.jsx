@@ -7,12 +7,28 @@ import dotOutLine from "../assets/dotOutLine.svg";
 import dotFill from "../assets/dotFill.svg";
 import lineBooking from "../assets/lineBooking.svg";
 import Logo from "../assets/Logo.svg";
+import { API } from "../lib/_api";
+import { useQuery } from "react-query";
+import Moment from "react-moment";
+import jwt from "jwt-decode";
 
 export function MyBooking() {
   // const {id} = useParams()
+  const getToken = localStorage.getItem("token");
+  const decode = jwt(getToken);
   const { rooms } = useContext(RoomsContext);
-  const { room } = useParams();
+  const { room, logInId } = useParams();
+  console.log(logInId);
   const detailRoom = rooms[room - 1];
+  let { data: property } = useQuery("propertyCache", async () => {
+    const response = await API.get(`/property/` + room);
+    return response.data.data;
+  });
+  let { data: tenant } = useQuery("userCache", async () => {
+    const responseuser = await API.get(`/user/` + decode.id);
+    return responseuser.data.data;
+  });
+  console.log(tenant);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -20,7 +36,7 @@ export function MyBooking() {
 
   const getData = JSON.parse(localStorage.getItem("Date"));
   const getProfile = JSON.parse(localStorage.getItem("UserSignUp"));
-  console.log(getProfile);
+  // console.log(getProfile);
 
   return (
     <Container>
@@ -40,16 +56,18 @@ export function MyBooking() {
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <h2 className="p-3">Booking</h2>
-              <h5>{getData.check_in}</h5>
+              <Moment format="DD MMMM YYYY">
+                <h5>{getData.check_in}</h5>
+              </Moment>
+              {/* <h5>{getData.check_in}</h5> */}
             </div>
           </div>
           <div className="d-flex" style={{ justifyContent: "space-between" }}>
             <div>
-              <h3 className="md-5">{detailRoom?.roomName}</h3>
+              <h3 className="md-5">{property?.name}</h3>
               <Col md={8}>
                 <p>
-                  {detailRoom?.roomStreetAddress},{detailRoom?.districtAddress},
-                  {detailRoom?.townAddress}
+                  {property?.address},{property?.city.name}
                 </p>
                 <div
                   className=" align-middle"
@@ -84,9 +102,6 @@ export function MyBooking() {
                       alt="dot"
                     />
 
-                    {/* <div style={{ backgroundColor: "green", width: ".5rem", height: "5rem" }}>
-                      i
-                    </div> */}
                     <img
                       className="bg-primary"
                       src={lineBooking}
@@ -106,9 +121,10 @@ export function MyBooking() {
                   </div>
                   <div>
                     <h5>Check-In</h5>
-                    <p style={{ color: "grey" }}>{getData?.check_in}</p>
+                    <Moment format="DD MMMM YYYY">{getData?.check_in}</Moment>
+
                     <h5>Check-Out</h5>
-                    <p style={{ color: "grey" }}>{getData?.check_out}</p>
+                    <Moment format="D MMMM YYYY">{getData?.check_out}</Moment>
                   </div>
                 </div>
               </Col>
@@ -116,11 +132,30 @@ export function MyBooking() {
             <div>
               <div>
                 <h5>Amenities</h5>
-                <p style={{ color: "grey" }}>Furnished</p>
+                {/* <p style={{ color: "grey", marginLeft: "5px" }}>{property?.amenities} </p> */}
+                {property?.amenities.map((amenity, k) => (
+                  <span
+                    key={k}
+                    // className="position-relative fw-bold "
+                    style={{
+                      padding: "4px",
+                      width: "5.5rem",
+                      backgroundColor: "white",
+                      top: "35px",
+                      left: "20px",
+                      marginLeft: "5px",
+                      borderRadius: "5px",
+                      color: "grey",
+                    }}
+                    variant="primary"
+                  >
+                    {amenity}
+                  </span>
+                ))}
               </div>
               <div>
                 <h5>Type of Rent</h5>
-                <p style={{ color: "grey" }}>{detailRoom?.period}</p>
+                <p style={{ color: "grey" }}>{property?.type_rent}</p>
               </div>
             </div>
             <div>
@@ -152,9 +187,9 @@ export function MyBooking() {
             <tbody>
               <tr>
                 <td>1</td>
-                <td style={{ color: "grey" }}>{getProfile?.fullname}</td>
-                <td style={{ color: "grey" }}>{getProfile?.gender}</td>
-                <td style={{ color: "grey" }}>{getProfile?.phone}</td>
+                <td style={{ color: "grey" }}>{tenant?.fullname}</td>
+                <td style={{ color: "grey" }}>{tenant?.gender}</td>
+                <td style={{ color: "grey" }}>{tenant?.phone}</td>
                 <td style={{ fontWeight: "bold" }}>Long Time rent</td>
                 <td>:</td>
                 <td style={{ fontWeight: "bold" }}>1 Year</td>

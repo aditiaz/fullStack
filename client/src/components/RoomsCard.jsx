@@ -29,51 +29,40 @@ export const RoomsCard = () => {
           return (
             <Col xs={3} sm={3} style={{ width: "25rem" }}>
               <Card key={e.imageUrl}>
-                {/* {e.amenities.map((amenity, k) => {
-                  <span
-                    key={k}
-                    className="position-absolute fw-bold p"
-                    style={{
-                      padding: "4px",
-                      width: "5.5rem",
-                      backgroundColor: "white",
-                      top: "20px",
-                      left: "20px",
-                      borderRadius: "5px",
-                    }}
-                    variant="primary"
-                  >
-                    {amenity}
-                  </span>;
-                })} */}
-                {/* </div> */}
-                <span
-                  className="position-absolute fw-bold p"
-                  style={{
-                    padding: "4px",
-                    width: "5.5rem",
-                    backgroundColor: "white",
-                    top: "20px",
-                    left: "20px",
-                    borderRadius: "5px",
-                  }}
-                  variant="primary"
-                >
-                  Furnished
-                </span>
+                <div>
+                  {e.amenities.map((amenity, k) => (
+                    <span
+                      key={k}
+                      className="position-relative fw-bold "
+                      style={{
+                        padding: "4px",
+                        width: "5.5rem",
+                        backgroundColor: "white",
+                        top: "35px",
+                        left: "20px",
+                        marginLeft: "5px",
+                        borderRadius: "5px",
+                      }}
+                      variant="primary"
+                    >
+                      {amenity}
+                    </span>
+                  ))}
+                </div>
+
                 <Card.Img
-                  style={{ height: "30rem" }}
+                  style={{ height: "30rem", cursor: "pointer", marginTop: "-30px" }}
                   onClick={() => navigate(`detail/${e.id}`)}
-                  variant="top"
+                  // variant="top"
                   src={`http://localhost:5000/uploads/${e.image}`}
                 />
                 <Card.Body>
                   <Card.Title>
-                    Rp.{e.price.toLocaleString()} / {e.type_rent}
+                    Rp.{e.price.toLocaleString()} / {e.type_of_rent}
                   </Card.Title>
                   <Card.Text>
                     <p className="fw-bold">
-                      {e.bedroom} beds,{e.bathroom} baths,{e.roomSize} sqft
+                      {e.bedroom} beds,{e.bathroom} baths,{e.sqf} sqft
                     </p>
                     <p className="text-secondary">
                       {e.city.name},{e.address}

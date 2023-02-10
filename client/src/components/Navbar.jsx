@@ -43,11 +43,11 @@ export const Navbars = () => {
             <BsSearch strokeWidth={0.5} fontSize={29} style={{ cursor: "pointer" }} />
           </InputGroup.Text>
         </InputGroup>
-        {localStorage.userId == 1 ? (
+        {roles == "Owner" ? (
           <>
             <Components.DropdownOwner />
           </>
-        ) : localStorage.userId == 2 ? (
+        ) : roles == "Tenant" ? (
           <>
             <Components.DropdownNav />
           </>

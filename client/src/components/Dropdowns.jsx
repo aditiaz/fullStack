@@ -59,7 +59,7 @@ const DropdownNav = () => {
         <Dropdown.Item
           onClick={() => {
             navigate("/");
-            localStorage.removeItem("userId");
+            localStorage.removeItem("Roles");
           }}
           className="dropDownNav"
         >
@@ -130,7 +130,7 @@ const DropdownOwner = () => {
         <Dropdown.Item
           onClick={() => {
             navigate("/");
-            localStorage.removeItem("userId");
+            localStorage.removeItem("Roles");
           }}
           className="dropDownNav"
         >

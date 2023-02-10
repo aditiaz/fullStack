@@ -3,11 +3,14 @@ import { Button, Card, CardGroup, ListGroup, Container, Modal, Form } from "reac
 import { Navbars } from "../components";
 import email from "../assets/emailIc.svg";
 import lock from "../assets/lockIc.svg";
-import tenant from "../assets/tenantIc.svg";
+import tenants from "../assets/tenantIc.svg";
 import gender from "../assets/genderIc.svg";
 import phone from "../assets/phoneIc.svg";
 import address from "../assets/addressIc.svg";
 import profile from "../assets/profile.jpg";
+import { API } from "../lib/_api";
+import { useQuery } from "react-query";
+import jwt from "jwt-decode";
 
 export function Profile(props) {
   const hiddenFileInput = useRef(null);
@@ -35,6 +38,13 @@ export function Profile(props) {
       [e.target.name]: e.target.value,
     });
   };
+
+  let { data: tenant } = useQuery("profileCache", async () => {
+    const responseuser = await API.get(`/user/` + decode.id);
+    return responseuser.data.data;
+  });
+  const getToken = localStorage.getItem("token");
+  const decode = jwt(getToken);
 
   const handleLocal = () => {
     setShow(true);
@@ -64,7 +74,7 @@ export function Profile(props) {
             <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">
               <img src={require("../assets/profileIc.svg")} alt="" style={{ marginTop: "1rem" }} />
               <div className="ms-2 me-auto">
-                <div className="fw-bold">{getProfile?.fullname}</div>Full Name
+                <div className="fw-bold">{tenant?.fullname}</div>Full Name
               </div>
             </ListGroup.Item>
             <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">
@@ -79,7 +89,7 @@ export function Profile(props) {
                 }}
               />
               <div className="ms-2 me-auto mt-1">
-                <div className="fw-bold">{getProfile?.email}</div> Email
+                <div className="fw-bold">{tenant?.email}</div> Email
               </div>
             </ListGroup.Item>
 
@@ -97,11 +107,11 @@ export function Profile(props) {
               <Button onClick={handleShow} variant="password " className="fw-bold color text-info ">
                 Change Password
               </Button>
-              <div className="ms-5 mb-3">{getProfile?.password}</div>
+              <div className="ms-5 mb-3">{tenant?.password}</div>
             </ListGroup.Item>
             <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">
               <img
-                src={tenant}
+                src={tenants}
                 alt=""
                 style={{
                   marginBottom: "1rem",
@@ -111,7 +121,7 @@ export function Profile(props) {
                 }}
               />
               <div className="ms-2 me-auto">
-                <div className="fw-bold">{getProfile?.listAs}</div>
+                <div className="fw-bold">{tenant?.list_as.name}</div>
                 Status
               </div>
             </ListGroup.Item>
@@ -128,7 +138,7 @@ export function Profile(props) {
                 }}
               />
               <div className="ms-2 me-auto">
-                <div className="fw-bold">{getProfile?.gender}</div> Gender
+                <div className="fw-bold">{tenant?.gender}</div> Gender
               </div>
             </ListGroup.Item>
             <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">
@@ -144,7 +154,7 @@ export function Profile(props) {
                 }}
               />
               <div className="ms-2 me-auto">
-                <div className="fw-bold">{getProfile?.phone}</div> Mobile Phone{" "}
+                <div className="fw-bold">{tenant?.phone}</div> Mobile Phone{" "}
               </div>
             </ListGroup.Item>
             <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">
@@ -160,7 +170,7 @@ export function Profile(props) {
                 }}
               />
               <div className="ms-2 me-auto">
-                <div className="fw-bold">{getProfile?.address}</div>
+                <div className="fw-bold">{tenant?.address}</div>
                 Address
               </div>
             </ListGroup.Item>

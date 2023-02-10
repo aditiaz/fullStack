@@ -4,7 +4,6 @@ import bed from "../assets/bed.svg";
 import bathub from "../assets/bathub.svg";
 import { Button, Col, Modal, Form } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
-import { RoomsContext } from "../context/roomsContext";
 import moment from "moment";
 import { API } from "../lib/_api";
 import { useQuery } from "react-query";
@@ -73,7 +72,7 @@ export const DetailProperty = () => {
           >
             <div className="p-0 col-8">
               <p style={{ fontSize: "2rem", backgroundColor: "white" }}>
-                Rp.{property?.price} / Year
+                Rp.{property?.price} /{property?.type_rent}
               </p>
               <p className="text-secondary" style={{ fontSize: "1rem", width: "20rem" }}>
                 {property?.address},{property?.city.name}
@@ -113,7 +112,7 @@ export const DetailProperty = () => {
           </div>
           <h1 className="fw-bold">Description</h1>
           <p className="text-secondary ">{property?.description}</p>
-          {localStorage.getItem("UserSignIn") ? (
+          {localStorage.userId == 2 ? (
             <>
               <div className="d-flex justify-content-end w-100 my-5">
                 <Button

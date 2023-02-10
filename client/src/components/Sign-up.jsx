@@ -9,6 +9,7 @@ import { API } from "../lib/_api";
 
 export const SignUp = (props) => {
   const { setModalSignIn, setModalSignUp, modalSignUp, modalSignIn } = useContext(RoomsContext);
+  // const[setModalSignUp,modalSignUp]
 
   const { handleSignUpChange, handleSignUpSubmit } = useContext(RoomsContext);
   // console.log(localSignUpForm2);
@@ -20,7 +21,7 @@ export const SignUp = (props) => {
     username: "",
     email: "",
     password: "",
-    list_as_id: "",
+    listAs: "",
     gender: "",
     phone: "",
     address: "",
@@ -49,7 +50,7 @@ export const SignUp = (props) => {
         username: "",
         email: "",
         password: "",
-        list_as_id: "",
+        listAs: "",
         gender: "",
         phone: "",
         address: "",
@@ -73,7 +74,7 @@ export const SignUp = (props) => {
       <h2 className="d-flex justify-content-center my-3">Sign Up</h2>
       {message && message}
 
-      <Modal.Body style={{ height: "20rem", overflow: "hidden", overflow: "auto" }}>
+      <Modal.Body style={{ height: "35rem", overflow: "hidden", overflow: "auto" }}>
         <Form onSubmit={(e) => handleSubmit.mutate(e)} className="fw-bold">
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Full Name</Form.Label>
@@ -111,13 +112,7 @@ export const SignUp = (props) => {
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>List As</Form.Label>
-            <Form.Select
-              onChange={handleChange}
-              id="list_as_id"
-              name="list_as_id"
-              type="text"
-              autoFocus
-            >
+            <Form.Select onChange={handleChange} id="listAs" name="listAs" type="text" autoFocus>
               {listAs.map((e) => {
                 return <option>{e.value}</option>;
               })}
@@ -161,14 +156,14 @@ export const SignUp = (props) => {
           >
             Sign Up
           </Button>
-          <SignIn show={modalSignIn} onHide={() => setModalSignUp(false)} />
         </Form>
         <h6 className="d-flex justify-content-center text-secondary my-3">
           Already have an account? click &nbsp;
           <p
             onClick={() => {
               {
-                setModalSignUp(true);
+                setModalSignIn(true);
+                setModalSignUp(false);
               }
             }}
             className="nav-link fw-bold"

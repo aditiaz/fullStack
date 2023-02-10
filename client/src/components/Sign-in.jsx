@@ -1,6 +1,7 @@
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import { React, useContext, useState, useEffect } from "react";
 import { RoomsContext } from "../context/roomsContext";
+import { UserContext } from "../context/userContext";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { API } from "../lib/_api";
@@ -9,8 +10,9 @@ export const SignIn = (props) => {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState(null);
+  const [state, dispatch] = useContext(UserContext);
 
-  const { setModalSignIn, setUserId } = useContext(RoomsContext);
+  const { setModalSignIn, setUserId, setModalSignUp } = useContext(RoomsContext);
   const [formSubmit, setFormSubmit] = useState({
     username: "",
     password: "",
@@ -40,20 +42,24 @@ export const SignIn = (props) => {
         password: "",
       });
       console.log(responseLogIn.data.data);
-      if (responseLogIn.data.data.token == "") {
-        alert("either password or user name wrong");
-      }
-      if (responseLogIn.data.data.list_as_id == 1) {
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: responseLogIn.data.data,
+      });
+
+      if (responseLogIn.data.data.listAs == "Owner") {
         navigate("/indexOwner");
-      }
-      if (responseLogIn.data.data.list_as_id == 1) {
+        setModalSignIn(false);
+      } else {
         navigate("/");
       }
-      setUserId(responseLogIn.data.data.list_as_id);
+      // setUserId(responseLogIn.data.data.list_as_id);
+      // setLogInId(responseLogIn.data.data.id);
 
-      console.log(responseLogIn.data.data.list_as_id);
-      setUserId(localStorage.setItem("userId", responseLogIn.data.data.list_as_id));
+      console.log(responseLogIn.data.data.listAs);
+      // setUserId(localStorage.setItem("userId", responseLogIn.data.data.list_as_id));
       localStorage.setItem("token", responseLogIn.data.data.token);
+      localStorage.setItem("Roles", responseLogIn.data.data.listAs);
       console.log(responseLogIn.data.data);
     } catch (error) {
       const alert = (
@@ -64,11 +70,6 @@ export const SignIn = (props) => {
       setMessage(alert);
       console.log(error);
     }
-
-    // console.log(responseLogIn.data.data);
-    // console.log(response);
-
-    // // console.log(formSubmit);
   });
 
   return (
@@ -117,9 +118,16 @@ export const SignIn = (props) => {
         </Form>
         <h6 className="d-flex justify-content-center text-secondary my-3">
           Don't have an account? click &nbsp;
-          <a className="nav-link fw-bold" href="">
+          <p
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setModalSignIn(true);
+              setModalSignUp(true);
+            }}
+            className="nav-link fw-bold"
+          >
             Here
-          </a>
+          </p>
         </h6>
       </Modal.Body>
     </Modal>

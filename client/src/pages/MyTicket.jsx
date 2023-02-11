@@ -48,11 +48,11 @@ export function MyBooking() {
   const handleTransaction = useMutation(async () => {
     try {
       const response = await API.post("/createtransaction", {
-        checkin: getData.check_in,
-        checkout: getData.check_out,
+        check_in: getData.check_in,
+        check_out: getData.check_out,
         property_id: property.id,
         user_id: tenant.id,
-        total: property.price,
+        price: property.price,
         status: "Pending",
         // attachment: "image.png",
       });
@@ -124,15 +124,14 @@ export function MyBooking() {
               <Moment format="DD MMMM YYYY">
                 <h5>{getData.check_in}</h5>
               </Moment>
-              {/* <h5>{getData.check_in}</h5> */}
             </div>
           </div>
           <div className="d-flex" style={{ justifyContent: "space-between" }}>
             <div>
-              <h3 className="md-5">{property?.name}</h3>
+              <h3 className="md-5">{property?.name_property}</h3>
               <Col md={8}>
                 <p>
-                  {property?.address},{property?.city.name}
+                  {property?.address},{property?.city}
                 </p>
                 <div
                   className=" align-middle"
@@ -201,7 +200,6 @@ export function MyBooking() {
                 {property?.amenities.map((amenity, k) => (
                   <span
                     key={k}
-                    // className="position-relative fw-bold "
                     style={{
                       padding: "4px",
                       width: "5.5rem",
@@ -219,8 +217,8 @@ export function MyBooking() {
                 ))}
               </div>
               <div>
-                <h5>Type of Rent</h5>
-                <p style={{ color: "grey" }}>{property?.type_rent}</p>
+                <h5>Type of Rent :</h5>
+                <p style={{ color: "grey" }}>{property?.type_of_rent}</p>
               </div>
             </div>
             <div>
@@ -264,7 +262,7 @@ export function MyBooking() {
                   Total
                 </td>
                 <td>:</td>
-                <td style={{ fontWeight: "bold", color: "red" }}> Rp.3.800.000</td>
+                <td style={{ fontWeight: "bold", color: "red" }}> Rp.{property?.price}</td>
               </tr>
             </tbody>
           </Table>

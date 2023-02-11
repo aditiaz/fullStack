@@ -70,7 +70,7 @@ export const DetailProperty = () => {
           >
             <div className="p-0 col-8">
               <p style={{ fontSize: "2rem", backgroundColor: "white" }}>
-                Rp.{property?.price} / {property?.type_of_rent}
+                Rp.{property?.price.toLocaleString()} / {property?.type_of_rent}
               </p>
               <p className="text-secondary" style={{ fontSize: "1rem", width: "20rem" }}>
                 {property?.address},{property?.city}

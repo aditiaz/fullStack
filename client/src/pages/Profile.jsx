@@ -107,7 +107,7 @@ export function Profile(props) {
               <Button onClick={handleShow} variant="password " className="fw-bold color text-info ">
                 Change Password
               </Button>
-              <div className="ms-5 mb-3">{tenant?.password}</div>
+              <div className="ms-5 mb-3"></div>
             </ListGroup.Item>
             <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">
               <img
@@ -121,7 +121,7 @@ export function Profile(props) {
                 }}
               />
               <div className="ms-2 me-auto">
-                <div className="fw-bold">{tenant?.list_as.name}</div>
+                <div className="fw-bold">{tenant?.listAs}</div>
                 Status
               </div>
             </ListGroup.Item>

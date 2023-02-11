@@ -114,11 +114,9 @@ func (h *handlertransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 		Property:      request.Property,
 		UserID:     request.UserID,
 		User:       request.User,
-		Total:      request.Total,
+		Price:      request.Price,
 		Status:     request.Status,
-		Attachment: request.Attachment,
-	}
-	// total, _ := strconv.Atoi(request.Total)
+		}
 	newTransaction, err := h.TransactionRepository.CreateTransaction(transaction)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -128,23 +126,14 @@ func (h *handlertransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 	}
 
 
-	transaction, _ = h.TransactionRepository.GetTransaction(newTransaction.ID)
-
-
-	// w.WriteHeader(http.StatusOK)
-	// response := dto.SuccessResult{Code: http.StatusOK, Data: data}
-	// json.NewEncoder(w).Encode(response)
-
-	// 1. Initiate Snap client
+	transaction, _ = h.TransactionRepository.GetTransaction(newTransaction.ID)	
 	var s = snap.Client{}
 	s.New(os.Getenv("SERVER_KEY"), midtrans.Sandbox)
-	// Use to midtrans.Production if you want Production Environment (accept real transaction).
 
-	// 2. Initiate Snap request param
 	req := &snap.Request{
 		TransactionDetails: midtrans.TransactionDetails{
 			OrderID:  strconv.Itoa(transaction.ID),
-			GrossAmt: int64(request.Total),
+			GrossAmt: int64(request.Price),
 		},
 		CreditCard: &snap.CreditCardDetails{
 			Secure: true,
@@ -155,7 +144,7 @@ func (h *handlertransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 		},
 	}
 
-	// 3. Execute request create Snap transaction to Midtrans Snap API
+
 	snapResp, _ := s.CreateTransaction(req)
 	fmt.Println("ini snaprespppp", snapResp)
 
@@ -213,53 +202,6 @@ func (h *handlertransaction) Notification(w http.ResponseWriter, r *http.Request
 
 	w.WriteHeader(http.StatusOK)
 }
-
-// func (h *handlertransaction) Notification(w http.ResponseWriter, r *http.Request) { 
-// 	var notificationPayload map[string]interface{} 
-	
-// 	err := json.NewDecoder(r.Body).Decode(&notificationPayload) 
-// 	if err != nil { 
-// 	 w.WriteHeader(http.StatusBadRequest) 
-// 	 response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()} 
-// 	 json.NewEncoder(w).Encode(response) 
-// 	 return 
-// 	} 
-	
-// 	transactionStatus := notificationPayload["transaction_status"].(string) 
-// 	fraudStatus := notificationPayload["fraud_status"].(string) 
-// 	orderId := notificationPayload["order_id"].(string) // 112233 
-	
-// 	transaction, err := h.TransactionRepository.GetOneTransaction(orderId) 
-// 	if err != nil { 
-// 	 w.WriteHeader(http.StatusBadRequest) 
-// 	 response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()} 
-// 	 json.NewEncoder(w).Encode(response) 
-// 	 return 
-// 	} 
-	
-// 	if transactionStatus == "capture" { 
-// 	 if fraudStatus == "challenge" { 
-// 	  SendMail("success", transaction) 
-// 	  h.TransactionRepository.UpdateTransaction("pending", orderId) 
-// 	 } else if fraudStatus == "accept" { 
-// 	  SendMail("success", transaction) 
-// 	  h.TransactionRepository.UpdateTransaction("success", orderId) 
-// 	 } 
-// 	} else if transactionStatus == "settlement" { 
-// 	 SendMail("success", transaction) 
-// 	 h.TransactionRepository.UpdateTransaction("success", orderId) 
-// 	} else if transactionStatus == "deny" { 
-// 	 SendMail("success", transaction) 
-// 	 h.TransactionRepository.UpdateTransaction("failed", orderId) 
-// 	} else if transactionStatus == "cancel" || transactionStatus == "expire" { 
-// 	 SendMail("success", transaction) 
-// 	 h.TransactionRepository.UpdateTransaction("failed", orderId) 
-// 	} else if transactionStatus == "pending" { 
-// 	 SendMail("success", transaction) 
-// 	 h.TransactionRepository.UpdateTransaction("pending", orderId) 
-// 	} 
-	
-//    }
 
 func SendMail(status string, transaction models.Transaction) {
 

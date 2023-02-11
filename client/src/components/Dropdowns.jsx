@@ -89,7 +89,7 @@ const DropdownOwner = () => {
       <DropdownMenu>
         <Dropdown.Item
           onClick={() => {
-            navigate("/profileOwner/");
+            navigate("/profile");
           }}
           className="dropDownNav"
         >

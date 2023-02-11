@@ -12,8 +12,7 @@ import { API } from "../lib/_api";
 import { useQuery } from "react-query";
 
 export const Navbars = () => {
-  const { modalSignUp, setModalSignUp, modalSignIn, setModalSignIn, userId } =
-    useContext(RoomsContext);
+  const { modalSignUp, setModalSignUp, modalSignIn, setModalSignIn } = useContext(RoomsContext);
   const roles = localStorage.Roles;
   // console.log(roles);
 

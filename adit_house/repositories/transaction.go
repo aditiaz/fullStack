@@ -12,6 +12,7 @@ type TransactionRepository interface {
 	CreateTransaction(property models.Transaction)( models.Transaction,error)
 	UpdateTransaction(transaction models.Transaction) (models.Transaction, error)
 	UpdateTransactionNew(status string, ID string) error
+	GetOneTransaction(ID string)(models.Transaction, error)
 }
 
 func RepositoryTransaction(db *gorm.DB) *repository {
@@ -59,6 +60,13 @@ func (r *repository) UpdateTransactionNew(status string, ID string) error {
 	return err
 }
 
+
+func (r *repository) GetOneTransaction(ID string) (models.Transaction, error) { 
+	var transaction models.Transaction 
+	err := r.db.Preload("Property").Preload("User").First(&transaction, "id = ?", ID).Error 
+	
+	return transaction, err 
+   }
 
 
 

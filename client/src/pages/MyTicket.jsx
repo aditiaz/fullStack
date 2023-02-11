@@ -1,7 +1,7 @@
 import { Table, Container, Button, Modal, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { RoomsContext } from "../context/roomsContext";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Navbars } from "../components";
 import dotOutLine from "../assets/dotOutLine.svg";
 import dotFill from "../assets/dotFill.svg";
@@ -11,22 +11,29 @@ import { API } from "../lib/_api";
 import { useQuery } from "react-query";
 import Moment from "react-moment";
 import jwt from "jwt-decode";
+import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
 
 export function MyBooking() {
   // const {id} = useParams()
+  const navigate = useNavigate();
+  const { room } = useParams();
   const getToken = localStorage.getItem("token");
   const decode = jwt(getToken);
-  const { rooms } = useContext(RoomsContext);
-  const { room, logInId } = useParams();
-  console.log(logInId);
-  const detailRoom = rooms[room - 1];
-  let { data: property } = useQuery("propertyCache", async () => {
-    const response = await API.get(`/property/` + room);
+  let { data: property, refetch } = useQuery("propertyCache", async () => {
+    const config = {
+      method: "GET",
+      headers: {
+        Authorization: "Basic " + localStorage.token,
+      },
+    };
+    const response = await API.get(`/property/` + room, config);
     return response.data.data;
   });
+  console.log("ini property", property);
   let { data: tenant } = useQuery("userCache", async () => {
-    const responseuser = await API.get(`/user/` + decode.id);
-    return responseuser.data.data;
+    const response = await API.get(`/user/` + decode.id);
+    return response.data.data;
   });
   console.log(tenant);
 
@@ -35,8 +42,66 @@ export function MyBooking() {
   const handleShow = () => setShow(true);
 
   const getData = JSON.parse(localStorage.getItem("Date"));
-  const getProfile = JSON.parse(localStorage.getItem("UserSignUp"));
+  // const getProfile = JSON.parse(localStorage.getItem("UserSignUp"));
   // console.log(getProfile);
+
+  const handleTransaction = useMutation(async () => {
+    try {
+      const response = await API.post("/createtransaction", {
+        checkin: getData.check_in,
+        checkout: getData.check_out,
+        property_id: property.id,
+        user_id: tenant.id,
+        total: property.price,
+        status: "Pending",
+        // attachment: "image.png",
+      });
+
+      const tokenBaru = response.data.data.token;
+      console.log("habis add transaction tokennnnnn : ", response.data.data.token);
+
+      // const token = response.data.data.token;
+      console.log("ini tokennnnn", response);
+      console.log("ini tokennnnnbaru", tokenBaru);
+
+      window.snap.pay(tokenBaru, {
+        onSuccess: function (result) {
+          /* You may add your own implementation here */
+          console.log(result);
+          navigate("/profile");
+        },
+        onPending: function (result) {
+          /* You may add your own implementation here */
+          console.log(result);
+          navigate("/profile");
+        },
+        onError: function (result) {
+          /* You may add your own implementation here */
+          console.log(result);
+        },
+        onClose: function () {
+          /* You may add your own implementation here */
+          alert("you closed the popup without finishing the payment");
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  useEffect(() => {
+    const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
+    const myMidtransClientKey = "SB-Mid-client-KIN72obBiBI22Ax0";
+
+    let scriptTag = document.createElement("script");
+    scriptTag.src = midtransScriptUrl;
+    scriptTag.setAttribute("data-client-key", myMidtransClientKey);
+
+    document.body.appendChild(scriptTag);
+    return () => {
+      document.body.removeChild(scriptTag);
+    };
+  }, []);
 
   return (
     <Container>
@@ -205,7 +270,10 @@ export function MyBooking() {
           </Table>
         </div>
         <div style={{ display: "flex", justifyContent: "end" }}>
-          <Button style={{ width: 200, marginTop: "2rem" }} onClick={handleShow}>
+          <Button
+            style={{ width: 200, marginTop: "2rem" }}
+            onClick={() => handleTransaction.mutate()}
+          >
             PAY
           </Button>
           <Modal show={show} onHide={handleClose} animation={false}>
